@@ -1,10 +1,12 @@
 import { Scene } from 'phaser';
+import { Map } from '../classes/Map';
 
 export class Game extends Scene
 {
     camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;
     msg_text : Phaser.GameObjects.Text;
+    map: Map;
 
     constructor ()
     {
@@ -14,7 +16,8 @@ export class Game extends Scene
     create ()
     {
         this.camera = this.cameras.main;
-        this.camera.setBackgroundColor(0x00ff00);
+        this.createMap();
+        /*this.camera.setBackgroundColor(0x00ff00);
 
         this.background = this.add.image(512, 384, 'background');
         this.background.setAlpha(0.5);
@@ -30,6 +33,10 @@ export class Game extends Scene
 
             this.scene.start('GameOver');
 
-        });
+        });*/
+    }
+
+    createMap() {
+        this.map = new Map(this, 'map', 'background', 'bg', 'block');
     }
 }

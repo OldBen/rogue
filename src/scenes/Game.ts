@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import { Map } from '../classes/Map';
 import { Player } from '../classes/Player';
+import { Direction } from '../enum/Direction';
 
 export class Game extends Scene
 {
@@ -10,6 +11,7 @@ export class Game extends Scene
     map: Map;
     player: Player;
     cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+    static readonly TILE_SIZE = 64;
 
     constructor ()
     {
@@ -21,6 +23,8 @@ export class Game extends Scene
         this.camera = this.cameras.main;
         this.createMap();
         this.createPlayer();
+        this.createInputs();
+        this.addCollisions();
         /*this.camera.setBackgroundColor(0x00ff00);
 
         this.background = this.add.image(512, 384, 'background');
@@ -40,8 +44,8 @@ export class Game extends Scene
         });*/
     }
 
-    update() {
-        this.player.update(this.cursors);
+    update(_time: number, delta: number) {
+        this.player.update(delta);
     }
 
     createMap() {
@@ -50,6 +54,26 @@ export class Game extends Scene
 
     createPlayer() {
         this.player = new Player(this, 224, 224, 'characters', 0);
+    }
+
+    createInputs() {
+        this.input.keyboard.on('keydown-A', event => {
+            this.player.startMove(Direction.LEFT);
+        });
+        this.input.keyboard.on('keydown-D', event => {
+            this.player.startMove(Direction.RIGHT);
+        });
+        this.input.keyboard.on('keydown-W', event => {
+            this.player.startMove(Direction.UP);
+        });
+        this.input.keyboard.on('keydown-S', event => {
+            this.player.startMove(Direction.DOWN);
+        });
+    }
+
+    addCollisions() {
+        this.player.setCollideWorldBounds(true);
+        this.physics.add.collider(this.player, this.map.blockedLayer);
     }
 
 }

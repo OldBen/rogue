@@ -37,6 +37,7 @@ export class Preloader extends Scene
         this.load.image('background', 'level/background.png');
 
         this.load.spritesheet('characters', 'characters.png', {frameWidth: 32, frameHeight: 32});
+        this.load.spritesheet('monsters', 'monsters.png', {frameWidth: 32, frameHeight: 32});
         
         this.load.tilemapTiledJSON('map', 'level/dev1.tmj');
     }

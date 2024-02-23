@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 import { Map } from '../classes/Map';
 import { Player } from '../classes/Player';
 import { Direction } from '../enum/Direction';
+import { Monster } from '../classes/Monster';
 
 export class Game extends Scene
 {
@@ -11,6 +12,8 @@ export class Game extends Scene
     map: Map;
     player: Player;
     cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+    mapData: Array<Object>;
+    mobs: Array<Monster> = [];
     static readonly TILE_SIZE = 64;
 
     constructor ()
@@ -23,6 +26,7 @@ export class Game extends Scene
         this.camera = this.cameras.main;
         this.createMap();
         this.createPlayer();
+        this.createMonsters();
         this.createInputs();
         this.addCollisions();
         /*this.camera.setBackgroundColor(0x00ff00);
@@ -50,10 +54,23 @@ export class Game extends Scene
 
     createMap() {
         this.map = new Map(this, 'map', 'background', 'bg', 'block');
+        this.mapData = this.map.map.objects;
     }
 
     createPlayer() {
         this.player = new Player(this, 224, 224, 'characters', 0);
+    }
+
+    createMonsters() {
+        this.mapData.forEach((layer) => {
+            switch(layer.name) {
+                case 'mobs':
+                    layer.objects.forEach((obj) => {
+                        this.mobs.push(new Monster(this, obj.x*2, obj.y*2, 'monsters', 11));
+                    })
+                    break;
+            }
+        });
     }
 
     createInputs() {
@@ -74,6 +91,10 @@ export class Game extends Scene
     addCollisions() {
         this.player.setCollideWorldBounds(true);
         this.physics.add.collider(this.player, this.map.blockedLayer);
+        this.mobs.forEach(mob => {
+            this.physics.add.collider(this.player, mob);
+            this.physics.add.collider(mob, this.map.blockedLayer);
+        });
     }
 
 }
